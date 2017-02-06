@@ -36,13 +36,6 @@ public final class HabitContract {
         public final static String TABLE_NAME = "habit_tracker";
 
         /**
-         * Unique ID number for the habit (only for use in the database table).
-         *
-         * Type: INTEGER
-         */
-        public final static String _ID = BaseColumns._ID;
-
-        /**
          * Name of the habit.
          *
          * Type: TEXT

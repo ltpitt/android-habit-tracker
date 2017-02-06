@@ -15,9 +15,7 @@
  */
 package com.example.android.habit_tracker;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -26,21 +24,15 @@ import com.example.android.habit_tracker.data.HabitContract.HabitEntry;
 import com.example.android.habit_tracker.data.HabitDbHelper;
 
 /**
- * Displays list of habit_tracker that were entered and stored in the app.
+ * Displhays list of habit_tracker that were entered and stored in the app.
  */
 public class HabitListActivity extends AppCompatActivity {
 
-    /** Database helper that will provide us access to the database */
-    private HabitDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
-
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        mDbHelper = new HabitDbHelper(this);
     }
 
     @Override
@@ -55,26 +47,15 @@ public class HabitListActivity extends AppCompatActivity {
      * the habit_tracker database.
      */
     private void displayDatabaseInfo() {
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                HabitEntry._ID,
-                HabitEntry.COLUMN_HABIT_NAME,
-                HabitEntry.COLUMN_HABIT_DURATION
-        };
+        /** Database helper that will provide us access to the database */
+        HabitDbHelper mDbHelper;
 
-        // Perform a query on the habit_tracker table
-        Cursor cursor = db.query(
-                HabitEntry.TABLE_NAME,   // The table to query
-                projection,            // The columns to return
-                null,                  // The columns for the WHERE clause
-                null,                  // The values for the WHERE clause
-                null,                  // Don't group the rows
-                null,                  // Don't filter by row groups
-                null);                   // The sort order
+        // To access our database, we instantiate our subclass of SQLiteOpenHelper
+        // and pass the context, which is the current activity.
+        mDbHelper = new HabitDbHelper(this);
+
+        Cursor cursor = mDbHelper.readAllHabits();
 
         TextView displayView = (TextView) findViewById(R.id.text_view_habit);
 
@@ -116,26 +97,21 @@ public class HabitListActivity extends AppCompatActivity {
     }
 
     /**
-     * Helper method to insert hardcoded pet data into the database. For debugging purposes only.
+     * Temporary helper method to display information in the onscreen TextView about the state of
+     * the habit_tracker database.
      */
     private void insertHabit() {
-        // Gets the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        // Create a ContentValues object where column names are the keys,
-        // and Powernap's habit attributes are the values.
-        ContentValues values = new ContentValues();
-        values.put(HabitEntry.COLUMN_HABIT_NAME, "Powernap");
-        values.put(HabitEntry.COLUMN_HABIT_DURATION, 10);
+        /** Database helper that will provide us access to the database */
+        HabitDbHelper mDbHelper;
 
-        // Insert a new row for Powernap in the database, returning the ID of that new row.
-        // The first argument for db.insert() is the habit_tracker table name.
-        // The second argument provides the name of a column in which the framework
-        // can insert NULL in the event that the ContentValues is empty (if
-        // this is set to "null", then the framework will not insert a row when
-        // there are no values).
-        // The third argument is the ContentValues object containing the info for Toto.
-        long newRowId = db.insert(HabitEntry.TABLE_NAME, null, values);
+        // To access our database, we instantiate our subclass of SQLiteOpenHelper
+        // and pass the context, which is the current activity.
+        mDbHelper = new HabitDbHelper(this);
+
+        mDbHelper.insertHabit();
+
     }
+
 
 }
